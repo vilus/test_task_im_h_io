@@ -201,7 +201,8 @@
   * 3. нажать кнопку с цифрой выбранной оценки
   * 4. проверить, что всплывашка закрылась
   * 5. проверить, что в dev tools->Network появился запрос "nps" с типом "xhr"
-  * 6. кликнуть по запросу в столбце "Name", проверить:
+  * 6. кликнуть по запросу в столбце "Name", выбрать "Headers", проверить:
+        * 6.0. в "General" -> "Status Code" = "200 OK"
         * 6.1. в "General" -> "Request URL" заканчивается на "/nps"
         * 6.2. в "General" -> "Request Method" = "POST"
         * 6.3. в "Request Headers" -> "Content-Type:" = "application/json; charset=UTF-8" (TODO: возможно убрать, после уточнения ТЗ)
@@ -292,7 +293,8 @@
   * 3. нажать кнопку с цифрой 1
   * 4. нажать на кнопку "SEND"
   * 5. проверить, что в dev tools->Network появился запрос "nps" с типом "xhr"
-  * 6. кликнуть по запросу в столбце "Name", проверить:
+  * 6. кликнуть по запросу в столбце "Name", выбрать "Headers", проверить:
+        * 6.0. в "General" -> "Status Code" = "200 OK"
         * 6.1. в "General" -> "Request URL" заканчивается на "/nps"
         * 6.2. в "General" -> "Request Method" = "POST"
         * 6.3. в "Request Headers" -> "Content-Type:" = "application/json; charset=UTF-8" (TODO: возможно убрать, после уточнения ТЗ)
@@ -321,7 +323,8 @@
   * 5. удалить два последних символа: "11"
   * 6. нажать на кнопку "SEND"
   * 7. проверить, что в dev tools->Network появился запрос "nps" с типом "xhr"
-  * 8. кликнуть по запросу в столбце "Name", проверить:
+  * 8. кликнуть по запросу в столбце "Name", выбрать "Headers", проверить:
+        * 8.0. в "General" -> "Status Code" = "200 OK"
         * 8.1. в "General" -> "Request URL" заканчивается на "/nps"
         * 8.2. в "General" -> "Request Method" = "POST"
         * 8.3. в "Request Headers" -> "Content-Type:" = "application/json; charset=UTF-8" (TODO: возможно убрать, после уточнения ТЗ)
