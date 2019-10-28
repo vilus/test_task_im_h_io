@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+# TODO: add service of allure standalone server
+
+  selenium:
+    network_mode: host
+    image: selenium/standalone-chrome-debug:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+
+  tests:
+    network_mode: host
+    build: .
+    image: 'imhio_autotests'
+    volumes:  # TODO: move to dev compose file
+      - './front:/autotests/front'
+    command: "bash"
+    depends_on:
+      - selenium
+
+# TODO: volumes for allure
