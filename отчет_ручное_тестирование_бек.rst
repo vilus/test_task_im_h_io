@@ -1,0 +1,90 @@
+Неуспешно прошедшие кейсы:
+
+1.2.1.1. HTTP часть / Невалидные запросы / User-Agent под desktop / Без обязательного параметра "user_action"
+
+  .. error::
+     | подпункт 4.1. (воспроизведение), результат запроса,
+     | ожидали: HTTP/1.1 400 Bad Request
+     | получили: HTTP/1.1 200 OK
+
+
+1.2.1.2. HTTP часть / Невалидные запросы / User-Agent под desktop / С дополнительным случайным полем
+
+  .. error::
+     | подпункт 4.1. (воспроизведение), результат запроса,
+     | ожидали: HTTP/1.1 400 Bad Request
+     | получили: HTTP/1.1 200 OK
+
+
+1.2.1.3.2. HTTP часть / Невалидные запросы / User-Agent под desktop / С невалидным параметром "user_action" / Невалидный тип
+
+  .. error::
+     | для "user_action" [null, "null"], подпункт 4.1. (воспроизведение), результат запроса,
+     | ожидали: HTTP/1.1 400 Bad Request
+     | получили: HTTP/1.1 200 OK
+
+
+1.2.3. HTTP часть / Невалидные запросы / Список ошибок в ответе
+
+  .. error::
+     | подпункт 2. (воспроизведение),
+     | ожидали: несколько значений в списке ошибок: {"status": "error", "errors": ["Error 1", "Error 2"]}
+     | получили: одино значение в списке: {"errors":["Invalid rate"],"status":"error"}
+
+
+2.1.1.1. БД часть / Валидные запросы / User-Agent под desktop / С параметром "user_action"
+
+  .. error::
+     | для параметра "user_action" "0", подпункт 3.2. (воспроизведение),
+     | ожидали: значение 0 в поле "result"
+     | получили: пустое поле
+
+
+----
+
+Успешно прошедшие кейсы:
+
+| 1.1.1.1. HTTP часть / Валидные запросы / User-Agent под desktop / С параметром "user_action"
+| 1.1.1.2. HTTP часть / Валидные запросы / User-Agent под desktop / С параметром "user_action" и пустым "feedback"
+| 1.1.1.3. HTTP часть / Валидные запросы / User-Agent под desktop / С параметром "user_action" и "feedback"
+| 1.1.2.1. HTTP часть / Валидные запросы / User_Agent под mobile / С параметром "user_action"
+| 1.1.2.2. HTTP часть / Валидные запросы / User_Agent под mobile / С параметром "user_action" и пустым "feedback"
+| 1.1.2.3. HTTP часть / Валидные запросы / User_Agent под mobile / С параметром "user_action" и "feedback"
+| 1.2.1.3.1. HTTP часть / Невалидные запросы / User-Agent под desktop / С невалидным параметром "user_action" / Невалидное значение
+| 1.2.1.4.1. HTTP часть / Невалидные запросы / User-Agent под desktop / С невалидным параметром "feedback" / Невалидное значение
+| 1.2.1.4.2. HTTP часть / Невалидные запросы / User-Agent под desktop / С невалидным параметром "feedback" / Невалидный тип
+
+----
+
+Непроверенные кейсы:
+
+| 1.2.2. HTTP часть / Невалидные запросы / User_Agent под mobile
+| 2.3. Ограничения (на очищенной базе и перезапущенном сервисе) (кейсы под вопросом)
+| 2.1.1.2. БД часть / Валидные запросы / User-Agent под desktop / С параметром "user_action" и пустым "feedback"
+| 2.1.1.3. БД часть / Валидные запросы / User-Agent под desktop / С параметром "user_action" и "feedback"
+| 2.1.2. БД часть / Валидные запросы / User_Agent под mobile
+| 2.1.3. С пустым/без User-Agent
+| 2.2. БД часть / Невалидные запросы
+
+----
+
+Заметки на полях:
+
+несколькими способами можно вызвать ошибку:
+  ERROR #23505 duplicate key value violates unique constraint "t_feedback_models_pkey"
+
+один из способов:
+
+::
+
+  delete from t_feedback_models;
+  docker-compose restart nps
+
+  отправка 3-х запросов (вызывает "duplicate key ..." ошибку)
+
+  core=# select * from t_feedback_models;
+   id | result | feedback | device
+  ----+--------+----------+---------
+    2 |     10 |          | desktop
+    1 |     10 |          | desktop
+  (2 rows)

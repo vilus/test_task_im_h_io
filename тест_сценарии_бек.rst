@@ -94,7 +94,7 @@
               * 2.2.2.4.2. Невалидный тип
           * 2.2.2.5. Без параметров
 
-  * 2.3. Ограничения (на чистой базе и перезапущенном сервисе)
+  * 2.3. Ограничения (на очищенной базе и перезапущенном сервисе)
       * 2.3.1. Два валидных запроса с одинаковым "user_action"
       * 2.3.2. Два валидных запроса с одинаковыми "user_action" и "feedback"
 
@@ -355,3 +355,45 @@
         curl -s -i -H "Content-Type: application/json; charset=utf-8" -X POST -d $test_params 127.0.0.1:58001/nps
 
   * 2. проверить, что в ответе список ошибок в формате согласно ТЗ
+
+
+2.0. Подготовить PostgreSQL клиент
+  - psql  (как вариант)
+
+    ::
+
+          # параметры сети и хоста подключение в зависимости от:
+          docker run --network="host" -it --rm -e PGPASSWORD=devpass postgres:alpine psql -h 127.0.0.1 -U postgres -d core -p5433
+
+
+2.1.1.1. БД часть / Валидные запросы / User-Agent под desktop / С параметром "user_action"
+  * 0. повторить пункты [1-4] для значений ["0", "6", "10"]
+  * 1. выполнить в коммандной строке:
+
+    ::
+
+        export test_params='{"user_action":""}'  # !!! не забыть подставить значение из пункта 0.
+        curl -s -i -H "Content-Type: application/json; charset=utf-8" -X POST -d $test_params 127.0.0.1:58001/nps
+
+  * 2. выполнить в psql:
+
+    ::
+
+        select * from t_feedback_models;
+
+  * 3. проверить:
+        * 3.1. добавилась новая запись
+        * 3.2. в поле "result" значение из "user_action"
+        * 3.3. в поле "feedback" нет данных (where feedback is NULL)
+        * 3.4. в поле "device" значение "desktop"
+  * 4. выполнить в psql:
+
+    ::
+
+       delete from t_feedback_models;
+
+
+2.1.1.2. БД часть / Валидные запросы / User-Agent под desktop / С параметром "user_action" и пустым "feedback"
+  TODO: расписать (по аналогии с 2.1.1.1. с учетом параметров и проверок под этот кейс)
+
+TODO: дописать кейсы (по аналогии)
