@@ -3,3 +3,4 @@
 product
 .pytest_cache
 __pycache__
+allure-report

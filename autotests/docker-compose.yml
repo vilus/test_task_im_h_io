@@ -12,14 +12,28 @@ services:
       - "4444:4444"
       - "5900:5900"
 
+  allure:
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+      KEEP_HISTORY: "TRUE"
+    ports:
+      - "4040:4040"
+      - "5050:5050"
+    volumes:
+      - 'allure:/app/allure-results'
+      - './allure-report:/allure-report'
+
   tests:
     network_mode: host
     build: .
     image: 'imhio_autotests'
-    volumes:  # TODO: move to dev compose file
-      - './front:/autotests/front'
-    command: "bash"
+    volumes:
+      - './front:/autotests/front'  # TODO: move to dev compose file
+      - 'allure:/allure'
+    command: "bash"  # cd front && pytest
     depends_on:
       - selenium
 
-# TODO: volumes for allure
+volumes:
+  allure:

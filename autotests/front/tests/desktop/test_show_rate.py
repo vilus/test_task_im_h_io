@@ -12,7 +12,7 @@ def test_prevent_show_by_cookie(selenium, page_url):
     selenium.implicitly_wait(1)
     for _ in range(10):
         popup = RatingPopup(selenium, page_url).open_with_show(set_cookie=True)
-        assert not popup.is_present(), "Popup prevent by cookie, should not be present"
+        assert not popup.is_displayed(), "Popup prevent by cookie, should not be present"
 
 
 @pytest.mark.case_id('2.2.1.')

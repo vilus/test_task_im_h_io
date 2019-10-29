@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+import base64
+
+import allure
 import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption('--wait-timeout', default=10, help='TODO')
+    parser.addoption('--wait-timeout', default=5, help='TODO')
     parser.addoption('--page-url', default='http://127.0.0.1:58001', help='TODO')
     parser.addoption("--case-id", action="store", default='all', help="only run tests matching the case id from doc")
 
@@ -36,21 +39,8 @@ def pytest_runtest_setup(item):
             pytest.skip("test requires case_id in {!r}".format(cases))
 
 
-# TODO: show case_id in report
-# @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-# def pytest_runtest_makereport(item, call):
-#     # execute all other hooks to obtain the report object
-#     outcome = yield
-#     rep = outcome.get_result()
-#
-#     # we only look at actual failing test calls, not setup/teardown
-#     if rep.when == "call" and rep.failed:
-#         mode = "a" if os.path.exists("failures") else "w"
-#         with open("failures", mode) as f:
-#             # let's also access a fixture for the fun of it
-#             if "tmpdir" in item.fixturenames:
-#                 extra = " (%s)" % item.funcargs["tmpdir"]
-#             else:
-#                 extra = ""
-#
-#             f.write(rep.nodeid + extra + "\n")
+def pytest_selenium_capture_debug(item, report, extra):
+    for log_type in extra:
+        if log_type["name"] == "Screenshot":
+            content = base64.b64decode(log_type["content"].encode("utf-8"))
+            allure.attach(content, f'{item.name}.png', allure.attachment_type.PNG)

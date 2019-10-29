@@ -2,4 +2,4 @@ pytest
 selenium
 pytest-selenium
 PyPOM
-# allure
+allure-pytest
