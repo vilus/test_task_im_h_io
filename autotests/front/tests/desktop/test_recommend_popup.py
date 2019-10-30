@@ -9,7 +9,7 @@ from libs.helpers import case_id
 from libs.ctx_mng import catch_xhr
 
 
-# TODO: add and skipped all other cases from documentation
+# TODO: add and skip all other cases from documentation
 pytestmark = pytest.mark.case_id('3.')
 
 
@@ -40,9 +40,10 @@ def test_positive_choice(grade, selenium, page_url):
     with catch_xhr(selenium) as xhr:
         popup.make_choice(grade)
 
-    assert xhr.body == make_request_body(grade), 'Unexpected XHR body'
-    assert xhr.status == 200, 'Unexpected XHR status code'
-    assert xhr.response == EXPECTED_OK_RESPONSE, 'Unexpected XHR response'
+    with allure.step('проверяем обработку запроса'):
+        assert xhr.body == make_request_body(grade), 'Unexpected XHR body'
+        assert xhr.status == 200, 'Unexpected XHR status code'
+        assert xhr.response == EXPECTED_OK_RESPONSE, 'Unexpected XHR response'
 
     popup.assert_closed()
     popup.assert_present_cookie()
@@ -82,9 +83,10 @@ def test_send_feedback(selenium, page_url):
     with catch_xhr(selenium) as xhr:
         popup.send()
 
-    assert xhr.body == make_request_body(grade, feedback[:-2]), 'Unexpected XHR body'
-    assert xhr.status == 200, 'Unexpected XHR status code'
-    assert xhr.response == EXPECTED_OK_RESPONSE, 'Unexpected XHR response'
+    with allure.step('проверяем обработку запроса'):
+        assert xhr.body == make_request_body(grade, feedback[:-2]), 'Unexpected XHR body'
+        assert xhr.status == 200, 'Unexpected XHR status code'
+        assert xhr.response == EXPECTED_OK_RESPONSE, 'Unexpected XHR response'
 
     popup.assert_closed()
     popup.assert_present_cookie()

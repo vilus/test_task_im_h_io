@@ -4,6 +4,8 @@ import time
 
 from contextlib import contextmanager
 
+import allure
+
 
 class XHRState(object):
     def __init__(self, body=None, state=None):
@@ -39,6 +41,7 @@ class XHRState(object):
         return json.loads(res)
 
 
+@allure.step('ловим ajax')
 @contextmanager
 def catch_xhr(driver):
     # temporary solution

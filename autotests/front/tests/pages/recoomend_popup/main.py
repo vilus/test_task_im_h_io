@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import allure
+
 from pypom import Page  # , Region
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
@@ -31,17 +33,21 @@ class RatingPopup(Page):
 
     cookie_name = 'NPS_sended'
 
+    @allure.step('всплывающее окно показано?')
     def is_displayed(self):
         return self.is_element_displayed(*self.container)
 
+    @allure.step('устанавливаем куку, запрещающую показ всплывающего окна')
     def set_prevent_cookie(self):
         # TODO: via driver method
         self.driver.execute_script('document.cookie = "NPS_sended=1; expires = Thu, 01 Jan 2030 00:00:00 GMT; path=/;"')
 
+    @allure.step('удаляем куку, запрещающую показ всплывающего окна')
     def unset_prevent_cookie(self):
         # TODO: via driver method
         self.driver.execute_script('document.cookie = "NPS_sended=; expires = Thu, 01 Jan 1970 00:00:00 GMT; path=/;"')
 
+    @allure.step('открываем страницу с показом всплывающего окна (в зависимости от куки)')
     def open_with_show(self, set_cookie=False):
         self.open()
 
@@ -60,16 +66,20 @@ class RatingPopup(Page):
         self.driver.switch_to.window(self.driver.window_handles[-1])
         return self
 
+    @allure.step('закрываем всплывающее окно')
     def close(self):
         self.find_element(*self.cross).click()
 
-    def get_button_by_text(self, text):
-        return self.find_element(self.grade_button_tmpl[0], self.grade_button_tmpl[1].format(text))
+    @allure.step('получаем кнопку с оценкой')
+    def get_button_by_text(self, grade):
+        return self.find_element(self.grade_button_tmpl[0], self.grade_button_tmpl[1].format(grade))
 
+    @allure.step('выбираем оценку')
     def make_choice(self, grade):
         btn = self.get_button_by_text(grade)
         btn.click()
 
+    @allure.step('проверям, что всплывающее окно не отображается')
     def assert_closed(self):
         wait = WebDriverWait(self.driver, WAIT_TIMEOUT)
         try:
@@ -77,10 +87,12 @@ class RatingPopup(Page):
         except TimeoutException:
             raise AssertionError('popup was not closed')
 
+    @allure.step('проверяем отображение кнопок с оценками')
     def assert_displayed_choice_buttons(self):
         assert EC.visibility_of_all_elements_located(self.grade_buttons)(self.driver), 'grade buttons is not displayed'
         # TODO: add checking buttons label (0-10)
 
+    @allure.step('проверям видимость элементов окна опросника')
     def assert_displayed_choice(self):
         # TODO: customize wait timeout
         assert self.is_element_displayed(*self.cross), 'close button is not displayed'
@@ -97,13 +109,16 @@ class RatingPopup(Page):
         msg_txt = 'How likely are you to recommend our website to a friend?'
 
         # TODO: add wrapper around "element" with helpers like as assert_text
-        assert self.find_element(*self.like_title).text == likely_txt
-        assert self.find_element(*self.not_like_title).text == not_likely_txt
-        assert self.find_element(*self.default_msg).text == msg_txt
+        with allure.step('проверяем текст окна опросника'):
+            assert self.find_element(*self.like_title).text == likely_txt
+            assert self.find_element(*self.not_like_title).text == not_likely_txt
+            assert self.find_element(*self.default_msg).text == msg_txt
 
+    @allure.step('проверяем отображение загаловка окна отзыва')
     def assert_feedback_title_displayed(self):
         assert self.is_element_displayed(*self.feedback_title), 'feedback title is not displayed'
 
+    @allure.step('проверяем куку')
     def assert_present_cookie(self):
         cookie = self.driver.get_cookie(self.cookie_name)
         assert cookie is not None, 'prevent cookie is not present'
@@ -113,10 +128,12 @@ class RatingPopup(Page):
 
         # TODO: check expiry is in future (after specified)
 
+    @allure.step('вводим отзыв')
     def types_to_feedback(self, text):
         area = self.find_element(*self.feedback_textarea)
         # need focus?
         area.send_keys(text)
 
+    @allure.step('отправляем отзыв')
     def send(self):
         self.find_element(*self.send_btn).click()

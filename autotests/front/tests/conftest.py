@@ -8,7 +8,7 @@ import pytest
 def pytest_addoption(parser):
     parser.addoption('--wait-timeout', default=5, help='TODO')
     parser.addoption('--page-url', default='http://127.0.0.1:58001', help='TODO')
-    parser.addoption("--case-id", action="store", default='all', help="only run tests matching the case id from doc")
+    parser.addoption('--case-id', action='store', default='all', help='only run tests matching the case id from doc')
 
 
 @pytest.fixture
